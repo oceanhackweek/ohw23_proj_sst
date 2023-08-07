@@ -41,5 +41,7 @@ https://jamboard.google.com/d/1lOgVwnqQLvNRPAOEVEGnWXm8FSTuPYQWbteptKrslTM/viewe
 One of the goals of this project could be detecting upwelling areas:
 ![Screenshot 2023-06-26 at 5 52 43 PM](https://github.com/oceanhackweek/ohw23_proj_sst/assets/25447814/662fbb25-601c-4e2f-b733-da9d7051d7a6)
 
+First test using Transformers machine learning done by Jiarui Yu:
+![Screenshot 2023-08-07 at 3 47 22 PM](https://github.com/oceanhackweek/ohw23_proj_sst/assets/25447814/b4bcbcc7-07c4-4066-9176-77bb99bb189c)
 
 
