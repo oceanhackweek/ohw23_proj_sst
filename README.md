@@ -8,6 +8,8 @@ Pitch + Ideation: Predict SST anomalies (upwelling, other interesting SST anomal
 
 
 # STEPS:
+
+
 1) Data, boundary box (time [2000-2020], lat [-5,32], lon[45,90])
 2) Split data on training, validation and testing datasets
 3) Model Architecture: 
@@ -35,5 +37,9 @@ Github repo: URL: https://github.com/oceanhackweek/ohw23_proj_sst/
 Jiarui Yu, Boris Shapkin, Paula Birocchi (Seattle, US), ? Does anyone want to join us?
 # Jam Board:
 https://jamboard.google.com/d/1lOgVwnqQLvNRPAOEVEGnWXm8FSTuPYQWbteptKrslTM/viewer?f=10
+
+One of the goals of this project could be detecting upwelling areas:
+![Screenshot 2023-06-26 at 5 52 43 PM](https://github.com/oceanhackweek/ohw23_proj_sst/assets/25447814/662fbb25-601c-4e2f-b733-da9d7051d7a6)
+
 
 
