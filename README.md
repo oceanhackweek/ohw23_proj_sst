@@ -1,30 +1,39 @@
-# ohw23_proj_sst
-Predicting SST using machine learning
+# OHW 2023 - Predicting SST using satellite SST data and machine learning
+
 Project idea: SST spatial distribution prediction using machine learning
-Pitch + Ideation: Predict SST anomalies (upwelling, etc), generate SST spatial distribution, the model can also be used with other type of data as input!  
-STEPS:
-Data, boundary box (time [2000-2020], lat [-5,32], lon[45,90])
-Split
-Model Architecture: 
-ConvLSTM
-3D CNN
-Transformers
-Hybrid: CNN + Transformer + LSTM
-* SHAPE CORRECT
-Complie and fit
-Early-stop
-* Loss function: MSE, MAE, SSIM
-* metric
-Visualization of result and Interpretation! 
+
+We have a SST time series from 2000 to 2020 from ERA5 reanalysis to start to work with the model, but we are also interested in obtaining and using sattelite data from MUR (https://urs.earthdata.nasa.gov/).
+
+Pitch + Ideation: Predict SST anomalies (upwelling, other interesting SST anomalies), generate SST spatial distribution forecast. The machine learning model developed here can also be used with other type of data as input! 
 
 
-Ideation board: https://jamboard.google.com/d/1lOgVwnqQLvNRPAOEVEGnWXm8FSTuPYQWbteptKrslTM/viewer?f=10
-Slack channel: ohw23_proj_sst
+# STEPS:
+1) Data, boundary box (time [2000-2020], lat [-5,32], lon[45,90])
+2) Split data on training, validation and testing datasets
+3) Model Architecture: 
+a) ConvLSTM: this is going to be our first approach!
+b) 3D CNN
+c) Transformers
+d) Hybrid: CNN + Transformer + LSTM
+e) * SHAPE CORRECT
 
-Build the project team:
-Github repo: URL: we will create it tomorrow!
-Team members: Jiurai Yu, Boris, Paula Birocchi (Seattle, US), ? Does anyone want to join us?
-Jam Board:
+4) Complie and fit
+a) Early-stop
+b) * Loss function: MSE, MAE, SSIM
+c) * metric
+
+5) Visualization of result and Interpretation! 
+
+
+# Ideation board: https://jamboard.google.com/d/1lOgVwnqQLvNRPAOEVEGnWXm8FSTuPYQWbteptKrslTM/viewer?f=10
+# Slack channel: ohw23_proj_sst
+
+# Build the project team:
+Github repo: URL: https://github.com/oceanhackweek/ohw23_proj_sst/
+
+# Team members:
+Jiarui Yu, Boris Shapkin, Paula Birocchi (Seattle, US), ? Does anyone want to join us?
+# Jam Board:
 https://jamboard.google.com/d/1lOgVwnqQLvNRPAOEVEGnWXm8FSTuPYQWbteptKrslTM/viewer?f=10
 
 
