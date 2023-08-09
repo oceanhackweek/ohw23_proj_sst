@@ -53,6 +53,7 @@ ds = xr.open_zarr(
 dscut = ds.sel(time=slice("2002-06-01", "2002-06-30"),lat=slice(5,7),lon=slice(50,52))
 
 
+
 dscut['time'] = dscut['time'].dt.floor('D')
 
 import dask.array as da
@@ -155,7 +156,15 @@ val_dataset = tf.data.Dataset.from_tensor_slices((X_val, y_val))
 val_dataset = val_dataset.batch(32)
 
 history = model.fit(train_dataset, epochs=20, validation_data=val_dataset, callbacks=[early_stop])
-                                                                   
+
+
+def create_land_mask(data): 
+    land_mask = np.isnan(data)
+    return land_mask
+
+land_mask_resized = create_land_mask(X[0][0].compute())
+
+np.save('land_mask_resized.npy', land_mask_resized)
 def preprocess_vis_input_data(day_data):
     day_data = np.squeeze(day_data)
     mean_val = np.nanmean(day_data)
@@ -164,11 +173,11 @@ def preprocess_vis_input_data(day_data):
     processed_data = np.where(np.isnan(processed_data), 0.0, processed_data)
     return processed_data
 
-def postprocess_prediction(prediction, input_data):
+def postprocess_prediction(prediction, input_data,land_mask_resized):
     # Find positions where the last day of input_data is 0
-    land_mask = np.load('land_mask.npy')
+    
     # Set those positions in the prediction to NaN
-    prediction[land_mask] = np.nan
+    prediction[land_mask_resized] = np.nan
     
     # Add back the historical mean
     mean_val = np.nanmean(input_data)
@@ -190,7 +199,7 @@ def predict_and_plot(date_to_predict, window_size, model, dataset, plot=True):
     prediction = model.predict(input_data[np.newaxis, ...])[0]
     
     # Postprocess the prediction
-    prediction_postprocessed = postprocess_prediction(prediction, input_data_raw)
+    prediction_postprocessed = postprocess_prediction(prediction, input_data_raw,land_mask_resized)
     print(prediction_postprocessed.shape)
     # Step 3: Visualize
     if plot:
@@ -208,7 +217,9 @@ def predict_and_plot(date_to_predict, window_size, model, dataset, plot=True):
             plt.imshow(sample_2d, cmap='viridis', vmin=vmin, vmax=vmax)
             plt.title(title)
             plt.colorbar()
+            plt.savefig(
             plt.show()
+            
 
         # show input frames
         for i, frame in enumerate(input_data_raw):
@@ -221,6 +232,7 @@ def predict_and_plot(date_to_predict, window_size, model, dataset, plot=True):
         plot_sample(true_output_raw, title=f'True Output ({date_to_predict})')
 
     return input_data_raw, prediction_postprocessed, true_output_raw
+                
 
 
 def compute_mae(y_true, y_pred):
