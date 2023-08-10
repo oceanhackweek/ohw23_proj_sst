@@ -160,7 +160,7 @@ history = model.fit(train_dataset, epochs=20, validation_data=val_dataset, callb
 
 def create_land_mask(data): 
     land_mask = np.isnan(data)
-    return land_mask
+    return np.flipud(land_mask)
 
 land_mask_resized = create_land_mask(X[0][0].compute())
 
@@ -212,24 +212,23 @@ def predict_and_plot(date_to_predict, window_size, model, dataset, plot=True):
         vmin = np.nanmin(all_data)
         vmax = np.nanmax(all_data)
         
-        def plot_sample(sample, title=''):
+        def plot_sample(sample,i, title=''):
             sample_2d = np.squeeze(sample)
             plt.imshow(sample_2d, cmap='viridis', vmin=vmin, vmax=vmax)
             plt.title(title)
             plt.colorbar()
-            plt.savefig(
-            plt.show()
-            
+            plt.savefig('figure1_test'+str(i)+'.png', bbox_inches='tight')
+            plt.close()
 
         # show input frames
         for i, frame in enumerate(input_data_raw):
-            plot_sample(frame, title=f'Input Frame {i+1} ({dataset["time"].values[time_index-window_size+i]})')
+            plot_sample(frame, i,title=f'Input Frame {i+1} ({dataset["time"].values[time_index-window_size+i]})')
         
         # show predicted output
-        plot_sample(prediction_postprocessed, title=f'Predicted Output ({date_to_predict})')
+        plot_sample(prediction_postprocessed,i+1, title=f'Predicted Output ({date_to_predict})')
         
         # show true output
-        plot_sample(true_output_raw, title=f'True Output ({date_to_predict})')
+        plot_sample(true_output_raw, i+2,title=f'True Output ({date_to_predict})')
 
     return input_data_raw, prediction_postprocessed, true_output_raw
                 
@@ -253,3 +252,12 @@ last_frame_mae = compute_mae(true_output_2d, last_input_frame_2d)
 print(f"MAE between Last Input Frame and True Output: {last_frame_mae}")
 
 #model.save('ConvLSTM_nc_2002-.keras')
+                
+# just plotting land mask
+import numpy as np
+import matplotlib.pyplot as plt
+data = np.load('land_mask_resized.npy')
+plt.imshow(data, cmap='gray')
+plt.colorbar()
+plt.title('Land Mask')
+plt.savefig('land_mask_version2.png')
