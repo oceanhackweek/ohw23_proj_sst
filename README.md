@@ -1,27 +1,31 @@
-# OHW 2023 - Predicting SST using satellite SST data and machine learning
+# OHW 2023 - Predicting SST map using satellite SST data and machine learning
 
 Project idea: SST spatial distribution prediction using machine learning
 
-We have a SST time series from 2000 to 2020 from ERA5 reanalysis to start to work with the model, but we are also interested in obtaining and using sattelite data from MUR (https://urs.earthdata.nasa.gov/).
+We have a SST time series from 2000 to 2020 from ERA5 reanalysis to start to work with the model, but we are also interested in obtaining and using sattelite data from MUR (https://urs.earthdata.nasa.gov/). The satellite data is available in the S3 bucket. You can easily access this dataset using this Python code:
+https://github.com/oceanhackweek/ohw23_proj_sst/blob/main/access_MUR_satellite_data_through_python_S3bucket.py
 
-Pitch + Ideation: Predict SST anomalies (upwelling, other interesting SST anomalies), generate SST spatial distribution forecast. The machine learning model developed here can also be used with other type of data as input! 
+Pitch + Ideation: Predict SST anomalies (upwelling, other interesting SST anomalies), generate SST spatial distribution forecast.
+SST prediction is very important to understand the hydrodynamics and thermodynamics processes in the ocean and also near surface atmosphere-ocean interactions. 
+
+The machine learning model developed here can also be used with other type of data as input! The idea is to use this model with other parameters in the future. For now, we are interested in forecasting the next day of SST spatial distribution.
 
 
 # STEPS:
 
 
-1) Data, boundary box (time [2000-2020], lat [-5,32], lon[45,90])
-2) Split data on training, validation and testing datasets
+1) Get data, and define our boundary box (desired approach: time [2000-2020], lat [-5,32], lon[45,90]);
+2) Split data on training, validation and testing datasets;
 3) Model Architecture: 
-a) ConvLSTM: this is going to be our first approach!
+a) ConvLSTM: this is going to be our first (and main) approach!
 b) 3D CNN
 c) Transformers
-d) Hybrid: CNN + Transformer + LSTM
+d) Hybrid: CNN + Transformer + LSTM ( we won't have enough time to apply this model)
 e) * SHAPE CORRECT
 
 4) Complie and fit
 a) Early-stop
-b) * Loss function: MSE, MAE, SSIM
+b) * Loss function: MSE, MAE, SSIM (until now, we found better results using MSE)
 c) * metric
 
 5) Visualization of result and Interpretation! 
@@ -30,15 +34,10 @@ c) * metric
 # Ideation board: https://jamboard.google.com/d/1lOgVwnqQLvNRPAOEVEGnWXm8FSTuPYQWbteptKrslTM/viewer?f=10
 # Slack channel: ohw23_proj_sst
 
-# Build the project team:
-Github repo: URL: https://github.com/oceanhackweek/ohw23_proj_sst/
-
-# Team members:
-Jiarui Yu, Boris Shapkin, Paula Birocchi (Seattle, US), ? Does anyone want to join us?
 # Jam Board:
 https://jamboard.google.com/d/1lOgVwnqQLvNRPAOEVEGnWXm8FSTuPYQWbteptKrslTM/viewer?f=10
 
-One of the goals of this project could be detecting upwelling areas:
+One of the goals of this project is detecting upwelling areas:
 ![Screenshot 2023-06-26 at 5 52 43 PM](https://github.com/oceanhackweek/ohw23_proj_sst/assets/25447814/662fbb25-601c-4e2f-b733-da9d7051d7a6)
 
 First test using Transformers machine learning done by Jiarui Yu:
