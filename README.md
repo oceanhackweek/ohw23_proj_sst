@@ -2,9 +2,10 @@
 
 # Predicting SST spatial distribution using satellite SST data and machine learning models
 
-# One-line Description: SST spatial distribution prediction using machine learning
+# One-line Description
+SST spatial distribution prediction using machine learning
 
-# Collaborators and Roles:
+# Collaborators and Roles
 
 | Name                | Location   | Role                |
 |---------------------|------------|---------------------|
@@ -24,19 +25,15 @@
 We have a SST time series from 2000 to 2020 from ERA5 reanalysis to start to work with the model, but we are also interested in obtaining and using sattelite data from MUR (https://urs.earthdata.nasa.gov/). The satellite data is available in the S3 bucket. You can easily access this dataset using this Python code:
 https://github.com/oceanhackweek/ohw23_proj_sst/blob/main/access_MUR_satellite_data_through_python_S3bucket.py
 
-
-
-
-
 # Goals
 Pitch + Ideation: Predict SST anomalies (upwelling, other interesting SST anomalies), generate SST spatial distribution forecast.
 SST prediction is very important to understand the hydrodynamics and thermodynamics processes in the ocean and also near surface atmosphere-ocean interactions. 
 
-# Datasets:
+# Datasets
 ERA 5 reanalysis (2000-2020). You can find the dataset in the project google drive:  https://drive.google.com/drive/folders/1M0o_R4aoDxU9XJOtLEHe90bma-Jn-jM9
 MUR Satellite Data (2002-present): S3 bucket and NASA website: https://podaac.jpl.nasa.gov/dataset/MUR-JPL-L4-GLOB-v4.1
 
-# Workflow/Roadmap:
+# Workflow/Roadmap
 
 1) Get data, and define our boundary box (desired approach: time [2000-2020], lat [-5,32], lon[45,90]);
 2) Split data on training, validation and testing datasets;
@@ -56,19 +53,23 @@ c) * metric
 # References
 
 
-# Project idea: 
+# Project idea
 The machine learning model developed here can also be used with other type of data as input! The idea is to use this model with other parameters in the future. For now, we are interested in forecasting the next day of SST spatial distribution.
 
-# Ideation board: https://jamboard.google.com/d/1lOgVwnqQLvNRPAOEVEGnWXm8FSTuPYQWbteptKrslTM/viewer?f=10
-# Slack channel: ohw23_proj_sst
+# Ideation board
+https://jamboard.google.com/d/1lOgVwnqQLvNRPAOEVEGnWXm8FSTuPYQWbteptKrslTM/viewer?f=10
+# Slack channel
+ohw23_proj_sst
 
-# Start Presentation:
+# Start Presentation
 https://docs.google.com/presentation/d/1eQKSdFHNGMDqGJMY4d-yGnNm4UrUj5kIS2mLQGPMZC8/edit#slide=id.g239da66eda5_25_5
 
-# Final presentation: coming soon!
+# Final presentation
+coming soon!
 
-# Project google drive: 
+# Project google drive
 https://drive.google.com/drive/folders/1M0o_R4aoDxU9XJOtLEHe90bma-Jn-jM9
+
 One of the goals of this project is detecting upwelling areas:
 ![Screenshot 2023-06-26 at 5 52 43 PM](https://github.com/oceanhackweek/ohw23_proj_sst/assets/25447814/662fbb25-601c-4e2f-b733-da9d7051d7a6)
 
