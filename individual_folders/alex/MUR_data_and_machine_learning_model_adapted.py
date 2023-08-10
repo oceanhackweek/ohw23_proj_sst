@@ -21,6 +21,8 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras import layers, regularizers, optimizers
 import matplotlib.pyplot as plt
 import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import ConvLSTM2D, BatchNormalization, Conv2D
 from tensorflow.keras.layers import Input, Dropout, Dense, Add, LayerNormalization
 from tensorflow.keras.models import Model
 from tensorflow.keras.callbacks import EarlyStopping
@@ -39,7 +41,9 @@ import dask.array as da
 from dask.delayed import delayed
 from sklearn.model_selection import train_test_split
 import gc
-
+import numpy as np
+import matplotlib.pyplot as plt
+    
 
 
 def preprocess_day_data(day_data):
@@ -66,7 +70,7 @@ def preprocess_data(zarr_ds, chunk_size=200):
         chunks.append(processed_chunk)
 
     return da.concatenate(chunks, axis=0)
-#processed_data = preprocess_data(dscut)
+    #processed_data = preprocess_data(dscut)
 
 def prepare_data_from_processed(processed_data, window_size=5): 
     length = processed_data.shape[0]
@@ -78,7 +82,7 @@ def prepare_data_from_processed(processed_data, window_size=5):
 
     X, y = da.array(X), da.array(y)
     return X, y
-#X, y = prepare_data_from_processed(processed_data)
+    #X, y = prepare_data_from_processed(processed_data)
 
 
 def time_series_split(X, y, train_ratio=0.7, val_ratio=0.2):
@@ -98,11 +102,9 @@ def time_series_split(X, y, train_ratio=0.7, val_ratio=0.2):
     y_test = y[val_end:]
     
     return X_train, y_train, X_val, y_val, X_test, y_test
-#X_train, y_train, X_val, y_val, X_test, y_test = time_series_split(X, y)
+    #X_train, y_train, X_val, y_val, X_test, y_test = time_series_split(X, y)
 
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import ConvLSTM2D, BatchNormalization, Conv2D
+
 
 # please change the number of points in your matrix before running the following code:
 def create_simple_model(input_shape=(5, 201,201, 1)):
@@ -121,9 +123,69 @@ def create_simple_model(input_shape=(5, 201,201, 1)):
 
 
 
+
+def transformer_encoder(inputs, d_model, num_heads, ff_dim, dropout=0.1):
+    # Self attention
+    attention = tf.keras.layers.MultiHeadAttention(num_heads=num_heads, key_dim=d_model)(inputs, inputs, inputs)
+    attn_output = tf.keras.layers.Add()([attention, inputs])
+    out1 = tf.keras.layers.LayerNormalization(epsilon=1e-6)(attn_output)
+    
+    # Feed-forward network
+    ffn_output = tf.keras.models.Sequential([
+        tf.keras.layers.Dense(ff_dim, activation="relu"),
+        tf.keras.layers.Dense(d_model),
+    ])(out1)
+    out2 = tf.keras.layers.Add()([ffn_output, out1])
+    return tf.keras.layers.LayerNormalization(epsilon=1e-6)(out2)
+
+def create_transformer_model(input_shape=(5, 149, 181, 1)):
+    inputs = tf.keras.layers.Input(shape=input_shape)
+    
+    dim_out = [int((input_shape[1] + 1)/2), int((input_shape[2] + 1)/2)]
+    
+    # ConvLSTM layer with fewer filters
+    x = tf.keras.layers.ConvLSTM2D(filters=16, kernel_size=(3, 3),
+                                   padding='same', return_sequences=False)(inputs)
+    x = tf.keras.layers.BatchNormalization()(x)
+    
+    # Asymmetric padding after ConvLSTM
+    x = tf.keras.layers.ZeroPadding2D(padding=((0, 1), (0, 1)))(x)
+    
+    # Max pooling to reduce spatial dimensions
+    x = tf.keras.layers.MaxPooling2D(pool_size=(2, 2))(x)
+    
+    # Transformer layer with fewer dimensions
+    d_model = 16
+    num_heads = 2
+    ff_dim = 32
+    x = tf.keras.layers.Reshape((-1, d_model))(x)
+    x = transformer_encoder(x, d_model, num_heads, ff_dim)
+    
+    x = tf.keras.layers.Reshape((dim_out[0], dim_out[1], d_model))(x)
+    #x = tf.keras.layers.Reshape((75, 91, d_model))(x)
+    
+    # Upsample layer to match desired output size
+    x = tf.keras.layers.UpSampling2D(size=(2, 2))(x)
+    
+    # Cropping layer to match the exact desired size
+    x = tf.keras.layers.Cropping2D(cropping=((0, 1), (0, 1)))(x)
+    
+    # Output Conv2D layer
+    outputs = tf.keras.layers.Conv2D(filters=1, kernel_size=(3, 3), padding='same', activation='linear')(x)
+    
+    return tf.keras.models.Model(inputs=inputs, outputs=outputs)
+
+
+
+
+
+
+
+
 def create_land_mask(data): 
     land_mask = np.isnan(data)
     return np.flipud(land_mask)
+
 
 
 def preprocess_vis_input_data(day_data):
@@ -148,7 +210,7 @@ def postprocess_prediction(prediction, input_data,land_mask_resized):
     return prediction
 
 
-def predict_and_plot(date_to_predict, window_size, model, dataset, plot=True):
+def predict_and_plot(date_to_predict, window_size, model, dataset, land_mask_resized, plot=True):
     # Step 1: Select the time window
     time_index = np.where(dataset['time'].values == np.datetime64(date_to_predict))[0][0]
     input_data_raw = dataset['analysed_sst'][time_index-window_size:time_index].values
@@ -162,7 +224,7 @@ def predict_and_plot(date_to_predict, window_size, model, dataset, plot=True):
     prediction = model.predict(input_data[np.newaxis, ...])[0]
     
     # Postprocess the prediction
-    prediction_postprocessed = postprocess_prediction(prediction, input_data_raw,land_mask_resized)
+    prediction_postprocessed = postprocess_prediction(prediction, input_data_raw, land_mask_resized)
     print(prediction_postprocessed.shape)
     # Step 3: Visualize
     if plot:
@@ -227,7 +289,6 @@ def pull_a_tile(ds, lat, lon):
 
     dscut['time'] = dscut['time'].dt.floor('D')
 
-    
     # processed_data = preprocess_data(zarr_ds).compute()
     processed_data = preprocess_data(dscut)
 
@@ -235,7 +296,7 @@ def pull_a_tile(ds, lat, lon):
 
     #Split the X, y into train/val/test
     X_train, y_train, X_val, y_val, X_test, y_test = time_series_split(X, y)
-    return X_train, y_train, X_val, y_val, X_test, y_test
+    return dscut, X_train, y_train, X_val, y_val, X_test, y_test
 
 
 def explore_results(X, model, dscut):
@@ -245,32 +306,30 @@ def explore_results(X, model, dscut):
     #land_mask_resized = create_land_mask(X[0][0].compute())    
     land_mask_resized = create_land_mask(X[0][0].compute()) #Prepare a land mask
     np.save('land_mask_resized.npy', land_mask_resized)
-
     
     #Implement a Prediction
     date_to_predict = '2002-06-30'
     window_size = 5
-    input_data, predicted_output, true_output = predict_and_plot(date_to_predict, window_size, model, dscut)
-
+    input_data, predicted_output, true_output = predict_and_plot(date_to_predict, window_size, model, dscut, land_mask_resized)
+    
     predicted_mae = compute_mae(true_output, predicted_output)
     print(f"MAE between Predicted Output and True Output: {predicted_mae}")
-
+    
     last_input_frame = input_data[-1]
     last_input_frame_2d = np.squeeze(last_input_frame)
     true_output_2d = np.squeeze(true_output)
     last_frame_mae = compute_mae(true_output_2d, last_input_frame_2d)
     print(f"MAE between Last Input Frame and True Output: {last_frame_mae}")
-
+    
     #model.save('ConvLSTM_nc_2002-.keras')
-
+    
     # just plotting land mask
-    import numpy as np
-    import matplotlib.pyplot as plt
     data = np.load('land_mask_resized.npy')
     plt.imshow(data, cmap='gray')
     plt.colorbar()
     plt.title('Land Mask')
     plt.savefig('land_mask_version2.png')
+    #plt.close()
     
     
 def run():
