@@ -42,6 +42,20 @@ One of the goals of this project could be detecting upwelling areas:
 ![Screenshot 2023-06-26 at 5 52 43 PM](https://github.com/oceanhackweek/ohw23_proj_sst/assets/25447814/662fbb25-601c-4e2f-b733-da9d7051d7a6)
 
 First test using Transformers machine learning done by Jiarui Yu:
-![Screenshot 2023-08-07 at 3 47 22 PM](https://github.com/oceanhackweek/ohw23_proj_sst/assets/25447814/b4bcbcc7-07c4-4066-9176-77bb99bb189c)
+<img width="589" alt="Screenshot 2023-08-10 at 9 14 05 AM" src="https://github.com/oceanhackweek/ohw23_proj_sst/assets/97627889/e21d2f20-3be8-4d81-b1d3-b6e8bf957da1">
+<img width="589" alt="Screenshot 2023-08-10 at 9 14 24 AM" src="https://github.com/oceanhackweek/ohw23_proj_sst/assets/97627889/71eb7647-29bc-4f1c-9af1-42267d33cd7b">
 
+## Participants and Roles
 
+| Name                | Location   | Role                |
+|---------------------|------------|---------------------|
+| Joseph Gum          | Virtual    | Project Facilitator |
+| Jiarui Yu           | Seattle    | Participant         |
+| Paula Birocchi      | Seattle    | Participant         |
+| Boris Shapkin       | Seattle    | Participant         |
+| Hao Tang            | Australia  | Participant         |
+| Danyang Li          | Australia  | Participant         |
+| Chandrama Sarker    | Australia  | Participant         |
+| Zhengxi Zhou        | Australia  | Participant         |
+| Dafrosa Kataraihya  | Virtual    | Participant         |
+| Alex Slonimer       | Virtual    | Participant         |
