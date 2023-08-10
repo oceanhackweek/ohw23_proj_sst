@@ -282,10 +282,13 @@ def load_the_dataset():
     return ds
 
 
-def pull_a_tile(ds, lat, lon):
+def pull_a_tile(ds, lat, lon, time_slice):
     # We reduced the size of matrix to test the model, as we were having issues:
     # slicing our data to be able to make the model run:
-    dscut = ds.sel(time=slice("2002-06-01", "2002-06-30"),lat=slice(5,7),lon=slice(50,52))
+    dscut = ds.sel(time=time_slice,lat=slice(lat[0],lat[1]),lon=slice(lon[0],lon[1]))
+    print('lat {}'.format(lat))
+    print('lon {}'.format(lon))
+    #dscut = ds.sel(time=slice("2002-06-01", "2002-06-30"),lat=slice(5,7),lon=slice(50,52))
 
     dscut['time'] = dscut['time'].dt.floor('D')
 
@@ -334,47 +337,73 @@ def explore_results(X, model, dscut):
     
 def run():
     
-    lat_all = [-4, 32]
-    lon_all = [44, 90]
-    
-    step_size = 2
-    
-    lats = np.arange(lat_all[0], lat_all[2], step_size)  
-    lons = np.arange(lon_all[0], lon_all[2], step_size)
-    
     #Load the SST data
     ds = load_the_dataset()
+
+    #Time slice to use for training:
+    time_slice = slice("2002-06-01", "2002-06-30")
+
+    #Overall lat/lon area for the study
+    lat_all = [-4, 32]
+    lon_all = [44, 90]
+
+    #Set the model hyper parameters
+    batch_size = 64 #Data batch to load in
+    step_size = 2 #size of the square, degrees lat by degrees lon
+
+    num_tiles = 10 #This is the number of times it selects different input lat/lon tiles
+    num_epochs = 1 # This is the number of training epochs per tile, so don't want this to be too large
+
+    lats = np.arange(lat_all[0], lat_all[1], step_size)  
+    lons = np.arange(lon_all[0], lon_all[1], step_size)
+
+    #Set the outputs
+    parent_folder = os.getcwd()
+    model_path = parent_folder + '/sst_model'
     
-    run_number = 0
-    
-    #iterate through different lat/lon squares
-    for lat in lats:
-        for lon in lons:
-            
-            #Load the first tile:
-            lat = lats[0:2]
-            lon = lons[0:2]
-            X_train, y_train, X_val, y_val, X_test, y_test = pull_a_tile(ds,lat,lon)
+    # Rather than stepping through the lat and lon in 2 loops, randomly select the lat and lon tiles
+    run_number = 0 # initialize this so the model knows to initialize
+    for num in np.arange(0,num_tiles):
 
-            if run_number == 0:
-                #Compile the model:
-                model = create_simple_model(np.shape(X_train)[1:] + (1,))
-                #model = create_simple_model()
-                model.summary()
-                model.compile(optimizer='adam', loss='mse', metrics=['mse'])
+        #Randomly select lat/lon tiles
+        lat = random.randint(lat_all[0],lat_all[1]-step_size)
+        lon = random.randint(lon_all[0],lon_all[1]-step_size)
+        lat = [lat, lat+step_size]
+        lon = [lon, lon+step_size]
 
-                early_stop = EarlyStopping(patience=5, restore_best_weights=True)
+        #Load the tile:
+        print(f'{lat}, {lon}')
+        X_train, y_train, X_val, y_val, X_test, y_test = pull_a_tile(ds,lat,lon,time_slice)[1:]
+
+        if run_number == 0:
+            #Compile the model:
+
+            #model = create_transformer_model(np.shape(X_train)[1:] + (1,))
+
+            model = create_simple_model(np.shape(X_train)[1:] + (1,))
+
+            #model = create_simple_model()
+            model.summary()
+            model.compile(optimizer='adam', loss='mse', metrics=['mse'])
+            early_stop = EarlyStopping(patience=5, restore_best_weights=True)
 
 
-            #Train the model:
-            train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
-            train_dataset = train_dataset.shuffle(buffer_size=1024).batch(32)
+        #Train the model:
+        train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
+        train_dataset = train_dataset.shuffle(buffer_size=1024).batch(batch_size)
 
-            val_dataset = tf.data.Dataset.from_tensor_slices((X_val, y_val))
-            val_dataset = val_dataset.batch(32)
+        val_dataset = tf.data.Dataset.from_tensor_slices((X_val, y_val))
+        val_dataset = val_dataset.batch(32)
 
-            history = model.fit(train_dataset, epochs=20, validation_data=val_dataset, callbacks=[early_stop])
+        history = model.fit(train_dataset, epochs=num_epochs, validation_data=val_dataset, callbacks=[early_stop])
 
-            #Increment the run number
-            run_number += 1
+        #Increment the run number
+        run_number += 1
+
+        #Delete the data to free up memory:
+        del X_train, y_train, X_val, y_val, X_test, y_test
+        gc.collect()
+
+    #Save the model
+    model.save(model_path)
 
