@@ -72,11 +72,12 @@ https://drive.google.com/drive/folders/1M0o_R4aoDxU9XJOtLEHe90bma-Jn-jM9
 
 ## ERA5 Dataset
 
-| Model Architecture     | Val MSE | Early Stopping   |
-|:----------------------:|:-------:|:----------------:|
-| Transformer            | 0.1902  | Triggered        |
-| ConvLSTM               | 0.027   | Triggered        |
-| ConvLSTM + Transformer | 0.0493  | Not Triggered    |
+| Model Architecture     | Val MSE | Early Stopping   | Environment                |
+|:----------------------:|:-------:|:----------------:|:--------------------------:|
+| Transformer            | 0.1902  | Triggered        | CPU Friendly, <32G RAM     |
+| ConvLSTM               | 0.027   | Triggered        | GPU Needed, <32G RAM       |
+| ConvLSTM + Transformer | 0.0493  | Not Triggered    | GPU Needed, <128G RAM      |
+
 
 ## MUR Dataset
 
