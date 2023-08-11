@@ -1,5 +1,5 @@
 This repository contains the final scripts developed during the Ocean Hack Week 2023.
 
-GPU_tutorial repository : script developed by Boris and Jiurai to run the ConvLSTM deep learning model in a high memory virtual environment.
-low_memory repository: script developed by Alex, Paula, Boris and Jiurai to run ConvLSTM deep learning model in low (or high) memory machines.
+GPU_tutorial repository : script developed to run the ConvLSTM deep learning model in a high memory virtual environment.
+low_memory repository: script developed to run ConvLSTM deep learning model in low (or high) memory machines.
 
