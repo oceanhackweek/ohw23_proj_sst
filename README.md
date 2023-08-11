@@ -23,7 +23,7 @@ SST spatial distribution prediction using deep learning
 # Background
 
 We have a SST time series from 2000 to 2020 from ERA5 reanalysis to start to work with the model, but we are also interested in obtaining and using sattelite data from MUR (https://urs.earthdata.nasa.gov/). The satellite data is available in the S3 bucket. You can easily access this dataset using this Python code:
-https://github.com/oceanhackweek/ohw23_proj_sst/blob/main/access_MUR_satellite_data_through_python_S3bucket.py
+[https://github.com/oceanhackweek/ohw23_proj_sst/blob/main/access_MUR_satellite_data_through_python_S3bucket.py](https://github.com/oceanhackweek/ohw23_proj_sst/blob/main/temp/access_MUR_satellite_data_through_python_S3bucket.py)
 
 # Goals
 Pitch + Ideation: Predict SST anomalies (upwelling, other interesting SST anomalies), generate SST spatial distribution forecast.
