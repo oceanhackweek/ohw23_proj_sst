@@ -60,7 +60,7 @@ https://jamboard.google.com/d/1lOgVwnqQLvNRPAOEVEGnWXm8FSTuPYQWbteptKrslTM/viewe
 # Slack channel
 ohw23_proj_sst
 
-# Start Presentation
+# Ideation Presentation
 https://docs.google.com/presentation/d/1eQKSdFHNGMDqGJMY4d-yGnNm4UrUj5kIS2mLQGPMZC8/edit#slide=id.g239da66eda5_25_5
 
 # Final presentation
