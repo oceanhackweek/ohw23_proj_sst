@@ -41,7 +41,6 @@ a) ConvLSTM: this is going to be our first (and main) approach!
 b) 3D CNN
 c) Transformers
 d) Hybrid: CNN + Transformer + LSTM ( we won't have enough time to apply this model)
-e) * SHAPE CORRECT
 
 4) Complie and fit
 a) Early-stop
