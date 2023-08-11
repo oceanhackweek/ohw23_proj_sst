@@ -67,3 +67,22 @@ https://docs.google.com/presentation/d/1uUAIsuj9bxOFMVeIG_h5Bs-ZGDrRodldlz2FHfj4
 
 # Project google drive
 https://drive.google.com/drive/folders/1M0o_R4aoDxU9XJOtLEHe90bma-Jn-jM9
+
+# Result
+
+## ERA5 Dataset
+
+| Model Architecture     | Val MSE | Early Stopping   |
+|:----------------------:|:-------:|:----------------:|
+| Transformer            | 0.1902  | Triggered        |
+| ConvLSTM               | 0.027   | Triggered        |
+| ConvLSTM + Transformer | 0.0493  | Not Triggered    |
+
+## MUR Dataset
+
+| Model Architecture     | Val MSE | Early Stopping   |
+|:----------------------:|:-------:|:----------------:|
+| 3D CNN                 | 0.2041  | Triggered        |
+| ConvLSTM               | 0.0480  | Not Triggered    |
+
+
