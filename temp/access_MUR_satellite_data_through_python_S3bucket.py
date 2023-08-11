@@ -1,3 +1,6 @@
+'''
+This code was developed by Hao Tang during the OHW 2023 to get satellite data from S3 buckets.
+'''
 import s3fs
 import xarray as xr
 
